@@ -37,9 +37,25 @@ const Calculator = ({ navigation }) => {
     setExpression(newExpression);
     setInput(newExpression);
 
-    // Remove non-digit characters and check for 6-digit PIN
+    // Extract only digits
     const onlyDigits = newExpression.replace(/\D/g, '');
+
+    // If entered 6 digits
     if (onlyDigits.length === 6) {
+      // Case 1: Reset PIN entered
+      if (onlyDigits === '000000') {
+        await AsyncStorage.removeItem('userPin');
+        setInput('');
+        setExpression('');
+        Alert.alert(
+          'PIN Reset',
+          'Your PIN has been reset. Please register a new PIN.'
+        );
+        navigation.replace('Register');
+        return;
+      }
+
+      // Case 2: Match stored PIN
       const storedPin = await AsyncStorage.getItem('userPin');
       if (storedPin && onlyDigits === storedPin) {
         setInput('');

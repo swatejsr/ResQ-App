@@ -5,68 +5,91 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
+  Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+// ✅ Define navigation type
+type RootStackParamList = {
+  sosdial: undefined;
+  locationshare: undefined;
+  filesave: undefined;
+  chat: undefined;
+  hiddenfeature: undefined;
+  helpline: undefined;
+  panicbutton: undefined;
+};
+
+// ✅ Define feature grid data
 const features = [
   {
     key: 'sos',
     title: 'SOS (Dial Pad)',
     icon: 'call',
-    onPress: (navigation) => navigation.navigate('SOSDialPad'),
+    route: 'sosdial',
     color: '#ff3b30',
   },
   {
     key: 'location',
     title: 'Location Share',
     icon: 'location',
-    onPress: (navigation) => navigation.navigate('LocationShare'),
+    route: 'locationshare',
     color: '#007aff',
   },
   {
     key: 'filesave',
     title: 'File Save',
     icon: 'folder-open',
-    onPress: (navigation) => navigation.navigate('FileSave'),
+    route: 'filesave',
     color: '#ff9500',
   },
   {
     key: 'chat',
     title: 'Chat',
     icon: 'chatbubbles',
-    onPress: (navigation) => navigation.navigate('Chat'),
+    route: 'chat',
     color: '#34c759',
   },
   {
     key: 'hide',
     title: 'App Hidden Feature',
     icon: 'eye-off',
-    onPress: (navigation) => navigation.navigate('HiddenFeature'),
+    route: 'hiddenfeature',
     color: '#5856d6',
   },
   {
     key: 'helpline',
     title: 'Helpline Contacts',
     icon: 'help-circle',
-    onPress: (navigation) => navigation.navigate('Helpline'),
+    route: 'helpline',
     color: '#ff2d55',
   },
 ];
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const renderCard = ({ item }) => (
+  // ✅ Render each feature card
+  const renderCard = ({ item }: any) => (
     <TouchableOpacity
       style={[styles.card, { shadowColor: item.color }]}
-      onPress={() => item.onPress(navigation)}
-      activeOpacity={0.8}
-    >
+      onPress={() =>
+        navigation.navigate(item.route as keyof RootStackParamList)
+      }
+      activeOpacity={0.8}>
       <Icon name={item.icon} size={40} color={item.color} />
       <Text style={styles.cardText}>{item.title}</Text>
     </TouchableOpacity>
   );
+
+  // ✅ Panic button alert
+  const handlePanicPress = () => {
+    Alert.alert('🚨 Activate SOS?', 'Do you want to open the Panic Screen?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Open', onPress: () => navigation.navigate('panicbutton') },
+    ]);
+  };
 
   return (
     <View style={styles.container}>
@@ -75,9 +98,8 @@ const HomeScreen = () => {
       {/* PANIC BUTTON */}
       <TouchableOpacity
         style={styles.panicButton}
-        onPress={() => navigation.navigate('PanicButton')}
-        activeOpacity={0.8}
-      >
+        onPress={handlePanicPress}
+        activeOpacity={0.8}>
         <Text style={styles.panicButtonText}>🚨 PANIC</Text>
       </TouchableOpacity>
 
@@ -94,6 +116,9 @@ const HomeScreen = () => {
   );
 };
 
+export default HomeScreen;
+
+// ✅ Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -149,5 +174,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
-export default HomeScreen;

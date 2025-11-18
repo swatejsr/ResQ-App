@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { FEATURES } from './config/features';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FEATURES } from './config/features';
 
+// Screens
 import RegisterScreen from './screens/RegisterScreen';
 import Calculator from './screens/Calculator';
 import HomeScreen from './screens/HomeScreen';
@@ -25,11 +26,7 @@ const App = () => {
     const checkRegistration = async () => {
       try {
         const isRegistered = await AsyncStorage.getItem('isRegistered');
-        if (isRegistered === 'true') {
-          setInitialRoute('Calculator');
-        } else {
-          setInitialRoute('Register');
-        }
+        setInitialRoute(isRegistered === 'true' ? 'Calculator' : 'Register');
       } catch (error) {
         console.error('Error checking registration:', error);
         setInitialRoute('Register'); // fallback
@@ -38,7 +35,7 @@ const App = () => {
     checkRegistration();
   }, []);
 
-  if (!initialRoute) return null; // or show a loading spinner
+  if (!initialRoute) return null; // can add loading spinner later
 
   return (
     <NavigationContainer>
@@ -56,14 +53,20 @@ const App = () => {
         <Stack.Screen name="LocationShare" component={LocationShare} />
 
         {/* Main Features */}
-        {FEATURES.fileVault && <Stack.Screen name="FileSave" component={FileSave} />}
+        {FEATURES.fileVault && (
+          <Stack.Screen name="FileSave" component={FileSave} />
+        )}
         {FEATURES.chat && <Stack.Screen name="Chat" component={Chat} />}
-        {FEATURES.hiddenFeature && <Stack.Screen name="HiddenFeature" component={HiddenFeature} />}
+        {FEATURES.hiddenFeature && (
+          <Stack.Screen name="HiddenFeature" component={HiddenFeature} />
+        )}
         <Stack.Screen name="Helpline" component={Helpline} />
         <Stack.Screen name="PanicButton" component={PanicButton} />
 
         {/* Sub-features */}
-        {FEATURES.hiddenNotes && <Stack.Screen name="HiddenNotes" component={HiddenNotes} />}
+        {FEATURES.hiddenNotes && (
+          <Stack.Screen name="HiddenNotes" component={HiddenNotes} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

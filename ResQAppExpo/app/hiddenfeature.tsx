@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -7,16 +7,16 @@ import {
   Alert,
   BackHandler,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FEATURES } from '../config/features'; // ensure correct path
+import { FEATURES } from '../config/features'; // ✅ Make sure path is correct
 
 const HiddenFeature = () => {
-  const navigation = useNavigation();
+  const router = useRouter();
 
   const revealNotes = () => {
     if (FEATURES.hiddenNotes) {
-      navigation.navigate('HiddenNotes');
+      router.push('/hiddennotes');
     } else {
       Alert.alert('Feature Disabled', 'Hidden Notes are not available.');
     }
@@ -31,7 +31,7 @@ const HiddenFeature = () => {
     try {
       await AsyncStorage.multiRemove(['username', 'userPin', 'isRegistered']);
       Alert.alert('Logged out', 'You have been logged out.', [
-        { text: 'OK', onPress: () => navigation.replace('Register') },
+        { text: 'OK', onPress: () => router.replace('/register') },
       ]);
     } catch (error) {
       Alert.alert('Error', 'Failed to log out. Try again.');
